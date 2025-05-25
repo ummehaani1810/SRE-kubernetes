@@ -2,15 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: haani-app-deployment
+  labels:
+    app: example
 spec: # Defines the Deployment Behaviour
   replicas: 3
   selector:
     matchLabels:
-      app: web
+      app: temp
   template:
     metadata:
       labels:
-        app: web
+        app: temp
     spec: # Define the Pod behaviour
       containers:
       - name: rose-app
@@ -24,3 +26,16 @@ spec: # Defines the Deployment Behaviour
             cpu: "50m" 
         ports:
         - containerPort: 3015
+---
+#writing service.yaml file to expose the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: haani-app-svc
+spec:
+  selector:
+    app: temp
+  ports:
+  - port: 3016
+    targetPort: 3015
+  type: LoadBalancer
